@@ -30,14 +30,14 @@ def parse_pdf(file_path: str) -> list[dict]:
                         current_para.append(line)
                     elif current_para:
                         paragraphs.append({
-                            'text': ' '.join(current_para),
+                            'text': '\n'.join(current_para),
                             'images': [],
                         })
                         current_para = []
                 
                 if current_para:
                     paragraphs.append({
-                        'text': ' '.join(current_para),
+                        'text': '\n'.join(current_para),
                         'images': [],
                     })
             

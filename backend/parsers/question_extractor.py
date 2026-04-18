@@ -31,7 +31,7 @@ def extract_questions(text: str) -> list[ExtractedQuestion]:
     
     # Patterns
     question_pattern = re.compile(
-        r'^(?:Câu|Question|Q)\s*(\d+)\s*[.:)\]]\s*(.*)',
+        r'(?:Câu|Question|Q)\s*(\d+)(?:\s*\([^)]+\))?\s*[.:)\]]\s*(.*)',
         re.IGNORECASE
     )
     option_pattern = re.compile(
@@ -52,7 +52,7 @@ def extract_questions(text: str) -> list[ExtractedQuestion]:
             continue
         
         # Check for new question
-        q_match = question_pattern.match(line)
+        q_match = question_pattern.search(line)
         if q_match:
             # Save previous question
             if current_question:
@@ -141,7 +141,7 @@ def extract_questions_from_paragraphs(paragraphs: list[dict]) -> list[ExtractedQ
         para_text_before = '\n'.join(p.get('text', '') for p in paragraphs[:para_idx + 1])
         
         # Count how many questions appear before this paragraph
-        q_pattern = re.compile(r'(?:Câu|Question|Q)\s*(\d+)\s*[.:)\]]', re.IGNORECASE)
+        q_pattern = re.compile(r'(?:Câu|Question|Q)\s*(\d+)(?:\s*\([^)]+\))?\s*[.:)\]]', re.IGNORECASE)
         q_matches = list(q_pattern.finditer(para_text_before))
         
         if q_matches:
