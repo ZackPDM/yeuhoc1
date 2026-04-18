@@ -69,9 +69,22 @@ def extract_questions(text: str) -> list[ExtractedQuestion]:
         # Check for option
         opt_match = option_pattern.match(line)
         if opt_match and current_question is not None:
-            label = opt_match.group(1).upper()
-            text = opt_match.group(2).strip()
-            current_question.options.append(f'{label}. {text}')
+            # Find all options on this line (supports inline options: A. ... B. ... C. ... D. ...)
+            # We don't use \b here to be safe and compatible with potential line starts
+            opt_matches = list(re.finditer(r'(?:^|\s)([A-D])\s*[.:)]\s*', line))
+            if not opt_matches:
+                # Fallback to single option parsing if finditer somehow fails
+                label = opt_match.group(1).upper()
+                text = opt_match.group(2).strip()
+                current_question.options.append(f'{label}. {text}')
+            else:
+                for i, match in enumerate(opt_matches):
+                    label = match.group(1).upper()
+                    start = match.end()
+                    end = opt_matches[i+1].start() if i + 1 < len(opt_matches) else len(line)
+                    content = line[start:end].strip()
+                    current_question.options.append(f'{label}. {content}')
+            
             # Flush content lines
             if current_content_lines:
                 current_question.content += ' ' + ' '.join(current_content_lines)
