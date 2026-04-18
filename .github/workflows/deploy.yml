@@ -34,7 +34,7 @@ jobs:
         run: npm run build
         working-directory: frontend
         env:
-          NEXT_PUBLIC_BASE_PATH: ''
+          NEXT_PUBLIC_BASE_PATH: '/yeuhoc1'
           NEXT_PUBLIC_API_URL: ''
 
       - name: Upload artifact
